@@ -1,6 +1,6 @@
 resource "aws_instance" "bhp_instance" {
-    ami = "ami-09c813fb71547fc4f"
-    instance_type = "t2.micro"
+    ami = data.aws_ami.bhpami.id
+    instance_type = "t3.micro"
 
     tags = {
         Name = "bhp instance"

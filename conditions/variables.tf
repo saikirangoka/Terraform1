@@ -46,6 +46,6 @@ variable "security_group_tags" {
   }
 }
 
-variable "Environment" {
+variable "environment" {
   default = "prod"
 }

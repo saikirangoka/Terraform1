@@ -1,10 +1,10 @@
 resource "aws_instance" "bhp_instance" {
-    ami = "ami-09c813fb71547fc4f"
-    instance_type = "t2.micro"
+    ami = local.ami_id
+    instance_type = local.instance_type
 
     tags = {
-        Name = "bhp instance"
-        Environment = "development"
+        Name = local.name
+        Environment = local.Environment
     }
 }
 

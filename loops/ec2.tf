@@ -1,36 +1,53 @@
-resource "aws_instance" "Expense" {
-  count                  = 3
-  ami                    = var.ami_id
-  instance_type          = var.instance_type
-  vpc_security_group_ids = [aws_security_group.allow.id]
-  tags                   = {
+resource "aws_instance" "bhp_instance" {
+  count = 3
+  ami = var.ami_id
+  instance_type = var.instance_type
+  vpc_security_group_ids = [aws_security_group.allow_tls.id]
+
+  tags = merge(
+    var.common_tags,
+    {
     Name = var.instances[count.index]
-  }
+    }
+  )
 }
 
-resource "aws_security_group" "allow" {
-  name        = "allow_tls"
-  description = "Allow TLS inbound traffic and all outbound traffic"
+resource "aws_security_group" "allow_tls" {
+  name = "allow_tls"
+  description = "This is second ec2 instance created in terraform"
+
+  tags = var.sg_tags
 
   ingress {
-    from_port   = var.from_port
-    to_port     = var.to_port
-    protocol    = var.ingress_protocol
+    from_port = var.from_port
+    to_port = var.to_port
+    protocol = var.protocol
     cidr_blocks = var.cidr_blocks
   }
+
   egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = var.egress_protocol
-    cidr_blocks = var.cidr_blocks
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
   }
-  tags = var.security_group_tags
 }
 
-resource "aws_route53_record" "www" {
-  zone_id = aws_route53_zone.primary.zone_id
-  name    = "www.example.com"
+resource "aws_route53_record" "bhp_instance" {
+  count = 3
+  zone_id = var.zone_id
+  name    = "${var.instances[count.index]}.${var.domain}"
   type    = "A"
-  ttl     = 300
-  records = [aws_eip.lb.public_ip]
+  ttl     = 1
+  records = [aws_instance.bhp_instance[count.index].private_ip]
+  allow_overwrite = true
+}
+
+resource "aws_route53_record" "bhp_instance1" {
+  zone_id = var.zone_id
+  name = var.domain
+  type = "A"
+  ttl = 1
+  records = [aws_instance.bhp_instance[2].public_ip]
+  allow_overwrite = true
 }

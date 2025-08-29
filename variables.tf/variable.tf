@@ -1,4 +1,100 @@
+variable "ami_id" {
+  type = string
+  default = "ami-09c813fb71547fc4f"
+  description = "RHEL ami id"
+}
+
 variable "instance_type" {
+  type = string
+  #default = "t3.micro"
+  description = "type of instance"
+}
+
+variable "ec2_tags" {
+  type = map
+  default = {
+    Name = "bhp instance"
+    Project = "bhp"
+    Environment = "prod"
+    Component = "backend"
+  }
+}
+
+variable "from_port" {
+  type = number
+  default = 22
+}
+
+variable "to_port" {
+  type = number
+  default = 22
+}
+
+variable "protocol" {
+  type = string
+  default = "tcp"
+}
+
+variable "cidr_blocks" {
+  type = list(string)
+  default = ["0.0.0.0/0"]
+}
+
+variable "sg_tags" {
+  default = {
+    name = "bhp_security_group"
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* variable "instance_type" {
   type    = string
   default = "t3.micro"
 }
@@ -44,4 +140,4 @@ variable "security_group_tags" {
   default = {
     Name = "My_Security_Group"
   }
-}
+} */
